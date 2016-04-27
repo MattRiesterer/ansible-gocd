@@ -48,6 +48,9 @@
 
 # Configuring Go - Optional
 - name: retrieving server ID
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath 'string(/cruise/server/@serverId)' /etc/go/cruise-config.xml
   register: tmp_go_server_id
   changed_when: false
@@ -61,26 +64,41 @@
   changed_when: false
 
 - name: Check for existing pipelines
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath 'count(//pipelines)' /etc/go/cruise-config.xml
   register: tmp_go_pipelines_count
   changed_when: false
 
 - name: Check for existing agents
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath 'count(//agents)' /etc/go/cruise-config.xml
   register: tmp_go_agents_count
   changed_when: false
 
 - name: Check for existing templates
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath 'count(//templates)' /etc/go/cruise-config.xml
   register: tmp_go_templates_count
   changed_when: false
 
 - name: Check for existing environments
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath 'count(//environments)' /etc/go/cruise-config.xml
   register: tmp_go_environments_count
   changed_when: false
 
 - name: Save existing pipelines
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath '//pipelines' /etc/go/cruise-config.xml
   register: tmp_go_pipelines_config
   changed_when: false
@@ -92,6 +110,9 @@
   when: tmp_go_pipelines_count.stdout != "0"
 
 - name: Save existing agents
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath '//agents' /etc/go/cruise-config.xml
   register: tmp_go_agents_config
   changed_when: false
@@ -103,6 +124,9 @@
   when: tmp_go_agents_count.stdout != "0"
 
 - name: Save existing templates
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath '//templates' /etc/go/cruise-config.xml
   register: tmp_go_templates_config
   changed_when: false
@@ -114,6 +138,9 @@
   when: tmp_go_templates_count.stdout != "0"
 
 - name: Save existing environments
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   command: xmllint --xpath '//environments' /etc/go/cruise-config.xml
   register: tmp_go_environments_config
   changed_when: false
@@ -133,6 +160,9 @@
   when: GOCD_PASSWDFILE_PATH is not defined or GOCD_DEFAULT_ADMIN is not defined or GOCD_DEFAULT_PASS is not defined
 
 - name: Checking for password file
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   stat: "path={{ GOCD_PASSWDFILE_PATH }} get_md5=no"
   register: tmp_go_passwd
 
@@ -142,6 +172,9 @@
   when: tmp_go_passwd.stat.exists == False
 
 - name: Creating default admin user
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   lineinfile: "create=yes dest={{ GOCD_PASSWDFILE_PATH }} line='{{ tmp_passfile_contents.stdout }}' group={{ GOCD_GROUP }} mode=0640 owner={{ GOCD_USER }}"
   when: tmp_go_passwd.stat.exists == False
 
@@ -152,4 +185,7 @@
   uri: url=http://{{ ansible_hostname }}:{{ GOCD_SERVER_PORT }}/go/api/backups method=POST HEADER_accept='application/vnd.go.cd.v1+json' user={{ GOCD_DEFAULT_ADMIN }} password={{ GOCD_DEFAULT_PASS }}
 
 - name: Creating Go configuration file
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
   template: backup=no dest=/etc/go/cruise-config.xml group={{ GOCD_GROUP }} mode=0644 owner={{ GOCD_USER }} src=base-config.xml
