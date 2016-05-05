@@ -71,6 +71,14 @@
   register: tmp_go_pipelines_count
   changed_when: false
 
+- name: Check for existing admins
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
+  command: xmllint --xpath 'count(//server/security/admin)' /etc/go/cruise-config.xml
+  register: tmp_go_admin_count
+  changed_when: false
+
 - name: Check for existing agents
   become: yes
   become_method: sudo
@@ -108,6 +116,20 @@
   set_fact:
    GOCD_EXISTING_PIPELINES: "{{ tmp_go_pipelines_config.stdout }}"
   when: tmp_go_pipelines_count.stdout != "0"
+
+- name: Save existing admins
+  become: yes
+  become_method: sudo
+  become_user: "{{ GOCD_USER }}"
+  command: xmllint --xpath '//server/security/admins' /etc/go/cruise-config.xml
+  register: tmp_go_admin_config
+  changed_when: false
+  when: tmp_go_admin_count.stdout != "0"
+
+- name: Save admins as a fact
+  set_fact:
+   GOCD_EXISTING_ADMIN: "{{ tmp_go_admin_config.stdout }}"
+  when: tmp_go_admin_count.stdout != "0"
 
 - name: Save existing agents
   become: yes
