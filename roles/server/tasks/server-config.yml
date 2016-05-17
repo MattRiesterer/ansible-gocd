@@ -75,7 +75,7 @@
   become: yes
   become_method: sudo
   become_user: "{{ GOCD_USER }}"
-  command: xmllint --xpath 'count(//server/security/admin)' /etc/go/cruise-config.xml
+  command: xmllint --xpath 'count(//server/security/admins)' /etc/go/cruise-config.xml
   register: tmp_go_admin_count
   changed_when: false
 
