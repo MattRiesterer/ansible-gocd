@@ -1,6 +1,14 @@
 # {{ ansible_managed }}
 {{GOCD_AGENT_ADDITIONAL_DEFAULTS | default("") }}
-
+{% if ansible_env.http_proxy is defined %}
+export http_proxy={{ ansible_env.http_proxy }}
+{% endif %}
+{% if ansible_env.https_proxy is defined %}
+export https_proxy={{ ansible_env.https_proxy }}
+{% endif %}
+{% if ansible_env.no_proxy is defined %}
+export http_proxy={{ ansible_env.no_proxy }}
+{% endif %}
 export GO_SERVER={{ GOCD_SERVER_HOST }}
 export GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
 export JAVA_HOME={{ GOCD_JAVA_HOME }}
