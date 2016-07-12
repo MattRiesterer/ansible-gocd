@@ -15,6 +15,7 @@ then
      ssh-agent -k
    fi
    eval "$(ssh-agent -s -a $SERVER_WORK_DIR/ssh-agent)"
-   ssh-add /var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}}
+   ssh-add /var/go/.ssh/id_rsa
+   #ssh-add /var/go/.ssh/{{ GOCD_SSH_PRIVATE_KEY | basename}}
 fi
 {% endif %}

@@ -71,6 +71,9 @@
   ufw: rule=allow port=8154 proto=tcp
   when: ufw|success
 
-- name: create script for automated Go configuration backups to Git
-  template: backup=no dest=/usr/share/go-server/ mode=0755 src=backup_to_git.sh
+- file: path=/usr/share/go-server state=directory mode=0755 owner={{ GOCD_USER }} group={{ GOCD_GROUP }}
   sudo: yes
+
+- name: create script for automated Go configuration backups to Git
+  sudo: yes
+  template: backup=no dest=/usr/share/go-server/ mode=0755 owner={{ GOCD_USER }} group={{ GOCD_GROUP }} src=backup_to_git.sh
