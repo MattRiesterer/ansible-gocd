@@ -7,7 +7,7 @@ export http_proxy={{ ansible_env.http_proxy }}
 export https_proxy={{ ansible_env.https_proxy }}
 {% endif %}
 {% if ansible_env.no_proxy is defined %}
-export http_proxy={{ ansible_env.no_proxy }}
+export no_proxy={{ ansible_env.no_proxy }}
 {% endif %}
 export GO_SERVER={{ GOCD_SERVER_HOST }}
 export GO_SERVER_PORT={{ GOCD_SERVER_PORT }}
