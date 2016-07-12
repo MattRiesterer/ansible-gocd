@@ -12,6 +12,6 @@
 - name: Remove GOCD  Plugins
   file: path="{{ GOCD_SERVER_PLUGIN }}/{{ item | basename }}" state=absent
   with_items: GOCD_PLUGINS_REMOVE
-  sudo: yes
+  become: true
   notify:
    - restart go-server
